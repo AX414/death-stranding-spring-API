@@ -19,6 +19,10 @@ public class Entrega implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Version
+    @Column(nullable = false)
+    private Long version = 0L;
+
     @ManyToOne
     @JoinColumn(name = "entregador_id", nullable = true)
     private Entregador entregador;
@@ -38,11 +42,33 @@ public class Entrega implements Serializable {
     private StatusEntrega status;
 
     private LocalDate dataPedido;
+    @Column(nullable = true)
     private LocalDate dataInicio;
+    @Column(nullable = true)
     private LocalDate dataConclusao;
     private Integer dificuldade;
     private Integer experienciaEntregador;
     private Integer experienciaAbrigo;
+
+    public Entrega() {
+    }
+
+    public Entrega(UUID id, Long version, Entregador entregador, Pessoa pessoa, Abrigo abrigoOrigem, String descricao, Double peso, StatusEntrega status, LocalDate dataPedido, LocalDate dataInicio, LocalDate dataConclusao, Integer dificuldade, Integer experienciaEntregador, Integer experienciaAbrigo) {
+        this.id = id;
+        this.version = version;
+        this.entregador = entregador;
+        this.pessoa = pessoa;
+        this.abrigoOrigem = abrigoOrigem;
+        this.descricao = descricao;
+        this.peso = peso;
+        this.status = status;
+        this.dataPedido = dataPedido;
+        this.dataInicio = dataInicio;
+        this.dataConclusao = dataConclusao;
+        this.dificuldade = dificuldade;
+        this.experienciaEntregador = experienciaEntregador;
+        this.experienciaAbrigo = experienciaAbrigo;
+    }
 
     public UUID getId() {
         return id;

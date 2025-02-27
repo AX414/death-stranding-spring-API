@@ -34,9 +34,29 @@ public class Entregador implements Serializable {
     @Enumerated(EnumType.STRING)
     private Empresa empresa;
 
+    @Column(nullable = false)
+    private Integer ativo;
+
     //Lista que servirá de histórico de entrega
     @OneToMany(mappedBy = "entregador")
     private List<Entrega> entregas;
+
+    public Entregador() {
+    }
+
+    public Entregador(UUID id, String nome, String email, String senha, Integer nivel, Integer experiencia, Double pesoAtual, String fotoUrl, Empresa empresa, Integer ativo, List<Entrega> entregas) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.nivel = nivel;
+        this.experiencia = experiencia;
+        this.pesoAtual = pesoAtual;
+        this.fotoUrl = fotoUrl;
+        this.empresa = empresa;
+        this.ativo = ativo;
+        this.entregas = entregas;
+    }
 
     public UUID getId() {
         return id;
@@ -102,6 +122,14 @@ public class Entregador implements Serializable {
         this.fotoUrl = fotoUrl;
     }
 
+    public Integer getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Integer ativo) {
+        this.ativo = ativo;
+    }
+
     public Empresa getEmpresa() {
         return empresa;
     }
@@ -130,6 +158,7 @@ public class Entregador implements Serializable {
                 ", pesoAtual=" + pesoAtual +
                 ", fotoUrl='" + fotoUrl + '\'' +
                 ", empresa=" + empresa +
+                ", ativo=" + ativo +
                 ", entregas=" + entregas +
                 '}';
     }

@@ -10,8 +10,9 @@ import java.util.UUID;
 @Repository
 public interface EntregadorRepository extends JpaRepository<Entregador, UUID> {
 
+    Optional<Entregador> findById(UUID id);
     Optional<Entregador> findByNome(String nome);
     Optional<Entregador> findByEmail(String email);
     Optional<Entregador> findByEmailAndSenha(String email, String senha);
-
+    boolean existsByEmail(String email);
 }

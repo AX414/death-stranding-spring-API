@@ -1,5 +1,6 @@
 package br.com.death.strandingAPI.main;
 
+import br.com.death.strandingAPI.enums.Empresa;
 import br.com.death.strandingAPI.enums.StatusEntrega;
 import br.com.death.strandingAPI.models.Abrigo;
 import br.com.death.strandingAPI.models.Entrega;
@@ -40,7 +41,7 @@ public class Main {
     }
 
     public void consultarAPI() {
-        int op = 0;
+        int op = 100000;
 
         do {
             System.out.println("\n<MENU>");
@@ -69,6 +70,44 @@ public class Main {
         } while (op != 0);
     }
 
+    public void menu(Entregador e) {
+        int op = 0;
+
+        do {
+            System.out.println("<Menu>");
+            System.out.println("1 - Apresentar perfil de entregador.");
+            System.out.println("2 - Apresentar histórico de entregas.");
+            System.out.println("3 - Selecionar abrigo.");
+            System.out.println("4 - Novas entregas.");
+            System.out.println("0 - Encerrar consulta.");
+            System.out.print("\n\nSelecione uma opção:\nR.: ");
+            op = lerInt.nextInt();
+
+            switch (op) {
+                case 1:
+                    apresentarPerfil(e);
+                    break;
+                case 2:
+                    apresentarUltimasEntregas(e);
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    System.out.println("\n");
+                    notificacoesDeEntrega();
+                    break;
+                case 0:
+                    System.out.println("\nEncerrando consulta.");
+                    consultarAPI();
+                    break;
+                default:
+                    System.out.println("\nOpção inválida.");
+                    break;
+            }
+        } while (op != 0);
+    }
+
+
     public void login() {
         System.out.print("\nInforme o email:\nR.: ");
         var email = lerString.nextLine();
@@ -85,14 +124,78 @@ public class Main {
         }
     }
 
-    public void cadastrarNovoEntregador(){
-        // a ser feito
+    public void cadastrarNovoEntregador() {
+        Entregador novoEntregador = new Entregador();
+        boolean correto = false;
+        String nome, email, senha1, senha2, foto;
+        int empresa = 0;
+
+        try {
+            System.out.print("\n<Cadastro de Entregador>\n\n");
+            System.out.print("\nNome completo:\nR.:");
+            nome = lerString.nextLine();
+            System.out.print("\nEmail:\nR.:");
+            email = lerString.nextLine();
+
+            do {
+                System.out.print("\nSenha:\nR.:");
+                senha1 = lerString.nextLine();
+                System.out.print("\nDigita a senha novamente:\nR.:");
+                senha2 = lerString.nextLine();
+
+                if (!senha1.equals(senha2)) {
+                    System.out.print("\nSenhas inválidas, digite novamente.");
+                } else {
+                    correto = true;
+                }
+            } while (!correto);
+
+            correto = false;
+
+            do {
+                System.out.print("\nSelecione a empresa:\n\n1 - Bridges\n2 - Fragile Express\n3 - Autônomo\n\nR.:");
+                empresa = lerInt.nextInt();
+                if (empresa == 1 || empresa == 2 || empresa == 3) {
+                    correto = true;
+                    System.out.println("\nOpção inválida.");
+                }
+            } while (!correto);
+            System.out.print("\n(Opcional) Link de foto:\nR.:");
+            foto = lerString.nextLine();
+
+
+            novoEntregador.setNome(nome);
+            novoEntregador.setEmail(email);
+            novoEntregador.setSenha(senha1);
+            novoEntregador.setNivel(0);
+            novoEntregador.setExperiencia(0);
+            novoEntregador.setPesoAtual(0.0);
+            novoEntregador.setFotoUrl(foto);
+
+            switch (empresa) {
+                case 1:
+                    novoEntregador.setEmpresa(Empresa.BRIDGES);
+                    break;
+                case 2:
+                    novoEntregador.setEmpresa(Empresa.FRAGILE_EXPRESS);
+                    break;
+                case 3:
+                    novoEntregador.setEmpresa(Empresa.AUTONOMO);
+            }
+
+            novoEntregador.setEntregas(null);
+            novoEntregador.setAtivo(1);
+            entregadorRepository.save(novoEntregador);
+            System.out.println("\n<!>Cadastro efetuado com sucesso<!>");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void notificacoesDeEntrega() {
         try {
             instanciarNovasEntregas();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("\nNovas entregas foram solicitadas! Mantenha o bom trabalho 👍!\n");
@@ -139,58 +242,23 @@ public class Main {
             Pessoa pessoa = pessoas.get(random.nextInt(pessoas.size())); // Pessoa aleatória
 
             Entrega entrega = new Entrega();
-            entrega.setId(UUID.randomUUID());
             entrega.setAbrigoOrigem(abrigoOrigem);
             entrega.setPessoa(pessoa);
             entrega.setDescricao(descricoes.get(random.nextInt(descricoes.size())));
-            entrega.setPeso(random.nextDouble() * 160); // Peso entre 0 e 160kg
+            entrega.setPeso(random.nextDouble() * 100); // Peso entre 0 e 100kg
             entrega.setStatus(StatusEntrega.PENDENTE);
             entrega.setDataPedido(LocalDate.now());
 
-            novasEntregas.add(entrega);
+            entregaRepository.save(entrega);
 
-            System.out.println("|Nova entrega em "+pessoa.getAbrigo().getNome()+"|");
+            System.out.println("|Nova entrega em " + pessoa.getAbrigo().getNome() + "|");
         }
 
-        entregaRepository.saveAll(novasEntregas);
-    }
-
-
-    public void menu(Entregador e) {
-        int op = 0;
-
-        notificacoesDeEntrega();
-
-        do {
-            System.out.println("\n<Menu>");
-            System.out.println("1 - Apresentar perfil de entregador.");
-            System.out.println("2 - Apresentar histórico de entregas.");
-            System.out.println("3 - Selecionar abrigo.");
-            System.out.println("0 - Encerrar consulta.");
-            System.out.print("\n\nSelecione uma opção:\nR.: ");
-            op = lerInt.nextInt();
-
-            switch (op) {
-                case 1:
-                    apresentarPerfil(e);
-                    break;
-                case 2:
-                    apresentarUltimasEntregas(e);
-                    break;
-                case 0:
-                    System.out.println("\nEncerrando consulta.");
-                    consultarAPI();
-                    break;
-                default:
-                    System.out.println("\nOpção inválida.");
-                    break;
-            }
-        } while (op != 0);
     }
 
     public void apresentarPerfil(Entregador entregador) {
-        System.out.println("======================================================");
-        System.out.printf("%-20s: %s%n","Identificação", entregador.getId());
+        System.out.println("\n======================================================");
+        System.out.printf("%-20s: %s%n", "Identificação", entregador.getId());
         System.out.printf("%-20s: %s%n", "Nome", entregador.getNome());
         System.out.printf("%-20s: %s%n", "Empresa", entregador.getEmpresa());
         System.out.println("===================| PROGRESSO |======================");

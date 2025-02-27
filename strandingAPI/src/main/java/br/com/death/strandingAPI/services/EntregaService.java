@@ -18,7 +18,7 @@ public class EntregaService {
     public List<EntregaDTO> converterDTO(List<Entrega> lista) {
         return lista.stream().map(e -> new EntregaDTO(
                         e.getId(),
-                        e.getEntregador().getNome(),
+                        e.getEntregador() != null ? e.getEntregador().getNome() : "Sem entregador",
                         e.getPessoa().getNome(),
                         e.getAbrigoOrigem().getNome(),
                         e.getDescricao(),

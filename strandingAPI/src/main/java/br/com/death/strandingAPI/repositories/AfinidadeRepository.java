@@ -12,4 +12,5 @@ public interface AfinidadeRepository extends JpaRepository<Afinidade, UUID> {
 
     List<Afinidade> findByEntregador_Nome(String nome);
 
+    void deleteByEntregadorId(UUID id);
 }

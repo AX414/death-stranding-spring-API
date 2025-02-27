@@ -28,6 +28,17 @@ public class Afinidade implements Serializable {
     private Integer nivel;
     private Integer experiencia;
 
+    public Afinidade() {
+    }
+
+    public Afinidade(UUID id, Entregador entregador, Abrigo abrigo, Integer nivel, Integer experiencia) {
+        this.id = id;
+        this.entregador = entregador;
+        this.abrigo = abrigo;
+        this.nivel = nivel;
+        this.experiencia = experiencia;
+    }
+
     public UUID getId() {
         return id;
     }

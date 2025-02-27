@@ -23,6 +23,8 @@ public record EntregadorDTO(
         Double pesoAtual,
         @Schema(description = "URL da foto do entregador")
         String fotoUrl,
+        @Schema(description = "Informa se o perfil do entregador está ativo",examples = {"1 -> Sim", "0 -> Não"})
+        Integer ativo,
         @Schema(description = "Empresa que o entregador é vinculado", examples = {"BRIDGES", "FRAGILE_EXPRESS", "AUTONOMO"})
         Empresa empresa
 ) {

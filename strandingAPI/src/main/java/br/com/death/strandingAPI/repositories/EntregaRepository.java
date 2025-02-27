@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface EntregaRepository extends JpaRepository<Entrega, UUID> {
     List<Entrega> findByEntregadorId(UUID entregadorId);
+
+    void deleteByEntregadorId(UUID id);
 }

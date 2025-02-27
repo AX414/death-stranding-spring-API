@@ -27,6 +27,16 @@ public class Pessoa implements Serializable {
     @OneToMany(mappedBy = "pessoa")
     private List<Entrega> entregasRecebidas;
 
+    public Pessoa() {
+    }
+
+    public Pessoa(UUID id, String nome, Abrigo abrigo, List<Entrega> entregasRecebidas) {
+        this.id = id;
+        this.nome = nome;
+        this.abrigo = abrigo;
+        this.entregasRecebidas = entregasRecebidas;
+    }
+
     public UUID getId() {
         return id;
     }

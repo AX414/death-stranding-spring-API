@@ -29,6 +29,17 @@ public class Abrigo implements Serializable {
     @OneToMany(mappedBy = "abrigoOrigem")
     private List<Entrega> historicoEntregas;
 
+    public Abrigo() {
+    }
+
+    public Abrigo(UUID id, String nome, List<Afinidade> afinidades, List<Pessoa> residentes, List<Entrega> historicoEntregas) {
+        this.id = id;
+        this.nome = nome;
+        this.afinidades = afinidades;
+        this.residentes = residentes;
+        this.historicoEntregas = historicoEntregas;
+    }
+
     public UUID getId() {
         return id;
     }
