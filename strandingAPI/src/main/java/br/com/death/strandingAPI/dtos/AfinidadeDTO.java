@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public record AfinidadeDTO(
         UUID id,
-        UUID entregadorId,
-        UUID abrigoId,
+        String entregador,
+        String abrigoId,
         Integer nivel,
         Integer experiencia
 ) {}

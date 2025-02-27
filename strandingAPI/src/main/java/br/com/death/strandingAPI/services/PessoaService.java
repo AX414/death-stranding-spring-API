@@ -19,7 +19,7 @@ public class PessoaService {
         return lista.stream().map(p -> new PessoaDTO(
                         p.getId(),
                         p.getNome(),
-                        p.getAbrigo().getId()
+                        p.getAbrigo().getNome()
                 ))
                 .collect(Collectors.toList());
     }

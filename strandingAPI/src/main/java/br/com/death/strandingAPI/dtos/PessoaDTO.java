@@ -5,5 +5,5 @@ import java.util.UUID;
 public record PessoaDTO(
         UUID id,
         String nome,
-        UUID abrigoId
+        String abrigo
 ) {}

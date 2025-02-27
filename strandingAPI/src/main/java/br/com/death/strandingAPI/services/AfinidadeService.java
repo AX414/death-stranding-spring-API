@@ -18,8 +18,8 @@ public class AfinidadeService {
     public List<AfinidadeDTO> converterDTO(List<Afinidade> lista) {
         return lista.stream().map(a -> new AfinidadeDTO(
                         a.getId(),
-                        a.getEntregador().getId(),
-                        a.getAbrigo().getId(),
+                        a.getEntregador().getNome(),
+                        a.getAbrigo().getNome(),
                         a.getNivel(),
                         a.getExperiencia()
                 ))
@@ -28,5 +28,9 @@ public class AfinidadeService {
 
     public List<AfinidadeDTO> findAll() {
         return converterDTO(afinidadeRepository.findAll());
+    }
+
+    public List<AfinidadeDTO> findByEntregadorNome(String nome) {
+        return converterDTO(afinidadeRepository.findByEntregador_Nome(nome));
     }
 }
