@@ -1,18 +1,17 @@
 package br.com.death.strandingAPI.models;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-// Essa classe é responsável por manter o nível de
-// afinidade entre entregadores e abrigos, sendo o nível máximo 5 (*****)
-
+@Hidden
 @Entity
 @Table(name="afinidade")
 public class Afinidade implements Serializable {
 
-    private static final long serialVerionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

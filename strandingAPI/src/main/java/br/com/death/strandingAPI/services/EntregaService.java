@@ -18,16 +18,15 @@ public class EntregaService {
     public List<EntregaDTO> converterDTO(List<Entrega> lista) {
         return lista.stream().map(e -> new EntregaDTO(
                         e.getId(),
-                        e.getEntregador().getId(),
-                        e.getPessoa().getId(),
-                        e.getAbrigoOrigem().getId(),
+                        e.getEntregador().getNome(),
+                        e.getPessoa().getNome(),
+                        e.getAbrigoOrigem().getNome(),
                         e.getDescricao(),
                         e.getPeso(),
                         e.getStatus(),
                         e.getDataPedido(),
                         e.getDataInicio(),
                         e.getDataConclusao(),
-                        e.getAvaliacao(),
                         e.getDificuldade(),
                         e.getExperienciaEntregador(),
                         e.getExperienciaAbrigo()

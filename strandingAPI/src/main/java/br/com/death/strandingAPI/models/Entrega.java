@@ -1,17 +1,19 @@
 package br.com.death.strandingAPI.models;
 
 import br.com.death.strandingAPI.enums.StatusEntrega;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Hidden
 @Entity
 @Table(name="entrega")
 public class Entrega implements Serializable {
 
-    private static final long serialVerionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +40,6 @@ public class Entrega implements Serializable {
     private LocalDate dataPedido;
     private LocalDate dataInicio;
     private LocalDate dataConclusao;
-    private Integer avaliacao;
-
     private Integer dificuldade;
     private Integer experienciaEntregador;
     private Integer experienciaAbrigo;
@@ -124,14 +124,6 @@ public class Entrega implements Serializable {
         this.dataConclusao = dataConclusao;
     }
 
-    public Integer getAvaliacao() {
-        return avaliacao;
-    }
-
-    public void setAvaliacao(Integer avaliacao) {
-        this.avaliacao = avaliacao;
-    }
-
     public Integer getDificuldade() {
         return dificuldade;
     }
@@ -169,7 +161,6 @@ public class Entrega implements Serializable {
                 ", dataPedido=" + dataPedido +
                 ", dataInicio=" + dataInicio +
                 ", dataConclusao=" + dataConclusao +
-                ", avaliacao=" + avaliacao +
                 ", dificuldade=" + dificuldade +
                 ", experienciaEntregador=" + experienciaEntregador +
                 ", experienciaAbrigo=" + experienciaAbrigo +

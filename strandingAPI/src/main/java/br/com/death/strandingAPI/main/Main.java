@@ -11,7 +11,6 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -46,6 +45,7 @@ public class Main {
         do {
             System.out.println("\n<MENU>");
             System.out.println("1 - Iniciar sessão.");
+            System.out.println("2 - Cadastrar novo entregador.");
             System.out.println("0 - Encerrar sessão.");
 
             System.out.print("\n\nSelecione uma opção:\nR.: ");
@@ -55,6 +55,9 @@ public class Main {
                 case 1:
                     login();
                     break;
+                case 2:
+                    cadastrarNovoEntregador();
+                    break;
                 case 0:
                     System.out.println("\nEncerrando sessão. Mantenha o ótimo trabalho 👍");
                     break;
@@ -62,7 +65,6 @@ public class Main {
                     System.out.println("\nOpção inválida.");
                     break;
             }
-
 
         } while (op != 0);
     }
@@ -81,6 +83,10 @@ public class Main {
         } else {
             System.out.println("\n<!>Credenciais inválidas<!>\n");
         }
+    }
+
+    public void cadastrarNovoEntregador(){
+        // a ser feito
     }
 
     public void notificacoesDeEntrega() {

@@ -1,37 +1,29 @@
 package br.com.death.strandingAPI.dtos;
 
 import br.com.death.strandingAPI.enums.Empresa;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
 
+@Schema(description = "DTO de Entregador")
 public record EntregadorDTO(
+        @Schema(description = "Identificador do entregador")
         UUID id,
-
-        @NotBlank(message = "O nome não pode estar em branco")
+        @Schema(description = "Nome do entregador")
         String nome,
-
-        @NotBlank(message = "O email não pode estar em branco")
-        @Email(message = "Formato de email inválido")
+        @Schema(description = "Email do entregador")
         String email,
-
-        @NotBlank(message = "A senha não pode estar em branco")
+        @Schema(description = "Senha do entregador")
         String senha,
-
-        @NotNull(message = "O nível não pode ser nulo")
+        @Schema(description = "Nível do entregador")
         Integer nivel,
-
-        @NotNull(message = "A experiência não pode ser nula")
+        @Schema(description = "Experiência do entregador, onde a cada 1000, sobe um nível")
         Integer experiencia,
-
-        @NotNull(message = "O peso atual não pode ser nulo")
+        @Schema(description = "Peso atual, onde o peso máximo do entregador deve ser até 240kg")
         Double pesoAtual,
-
+        @Schema(description = "URL da foto do entregador")
         String fotoUrl,
-
-        @NotNull(message = "A empresa não pode ser nula")
+        @Schema(description = "Empresa que o entregador é vinculado", examples = {"BRIDGES", "FRAGILE_EXPRESS", "AUTONOMO"})
         Empresa empresa
 ) {
 }

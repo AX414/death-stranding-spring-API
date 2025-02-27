@@ -1,17 +1,19 @@
 package br.com.death.strandingAPI.models;
 
 import br.com.death.strandingAPI.enums.Empresa;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
+@Hidden
 @Entity
 @Table(name = "entregador")
 public class Entregador implements Serializable {
 
-    private static final long serialVerionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
