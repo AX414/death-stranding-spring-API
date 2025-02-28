@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class Abrigo implements Serializable {
     @OneToMany(mappedBy = "abrigo")
     private List<Pessoa> residentes;
 
-    @OneToMany(mappedBy = "abrigoOrigem")
+    @OneToMany(mappedBy = "abrigoOrigem", fetch = FetchType.LAZY)
     private List<Entrega> historicoEntregas;
 
     public Abrigo() {
@@ -82,12 +83,7 @@ public class Abrigo implements Serializable {
 
     @Override
     public String toString() {
-        return "Abrigo{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", afinidades=" + afinidades +
-                ", residentes=" + residentes +
-                ", historicoEntregas=" + historicoEntregas +
-                '}';
+        return "ABRIGO -> |UUID: "+id+" | Nome: "+nome;
     }
+
 }

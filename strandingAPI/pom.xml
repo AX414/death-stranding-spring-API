@@ -95,12 +95,6 @@
 			<version>2.8.5</version>
 		</dependency>
 
-		<dependency>
-			<groupId>tech.tablesaw</groupId>
-			<artifactId>tablesaw-core</artifactId>
-			<version>0.38.0</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

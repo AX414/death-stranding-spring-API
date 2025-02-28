@@ -81,12 +81,7 @@ public class Afinidade implements Serializable {
 
     @Override
     public String toString() {
-        return "Afinidade{" +
-                "id=" + id +
-                ", entregador=" + entregador +
-                ", abrigo=" + abrigo +
-                ", nivel=" + nivel +
-                ", experiencia=" + experiencia +
-                '}';
+        return "AFINIDADE -> |UUID: "+id+"| Entregador: "+entregador.getNome()+
+                " | Abrigo: "+abrigo.getNome()+" | Nível: "+nivel+" | Experiência: "+experiencia;
     }
 }

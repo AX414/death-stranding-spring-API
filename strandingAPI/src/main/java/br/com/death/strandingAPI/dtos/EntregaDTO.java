@@ -30,8 +30,6 @@ public record EntregaDTO(
         LocalDate dataConclusao,
         @Schema(description = "Dificuldade da entrega, sendo de 1 até 5")
         Integer dificuldade,
-        @Schema(description = "Quantia de experiência que o entregador irá receber")
-        Integer experienciaEntregador,
-        @Schema(description = "Quantia de experiência que será creditada entre o entregador e sua afinidade com o abrigo")
-        Integer experienciaAbrigo
+        @Schema(description = "Quantia de experiência que o entregador e o abrigo irá receber")
+        Integer experiencia
 ) {}

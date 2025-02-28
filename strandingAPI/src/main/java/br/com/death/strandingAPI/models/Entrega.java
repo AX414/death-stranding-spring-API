@@ -47,13 +47,12 @@ public class Entrega implements Serializable {
     @Column(nullable = true)
     private LocalDate dataConclusao;
     private Integer dificuldade;
-    private Integer experienciaEntregador;
-    private Integer experienciaAbrigo;
+    private Integer experiencia;
 
     public Entrega() {
     }
 
-    public Entrega(UUID id, Long version, Entregador entregador, Pessoa pessoa, Abrigo abrigoOrigem, String descricao, Double peso, StatusEntrega status, LocalDate dataPedido, LocalDate dataInicio, LocalDate dataConclusao, Integer dificuldade, Integer experienciaEntregador, Integer experienciaAbrigo) {
+    public Entrega(UUID id, Long version, Entregador entregador, Pessoa pessoa, Abrigo abrigoOrigem, String descricao, Double peso, StatusEntrega status, LocalDate dataPedido, LocalDate dataInicio, LocalDate dataConclusao, Integer dificuldade, Integer experiencia) {
         this.id = id;
         this.version = version;
         this.entregador = entregador;
@@ -66,8 +65,7 @@ public class Entrega implements Serializable {
         this.dataInicio = dataInicio;
         this.dataConclusao = dataConclusao;
         this.dificuldade = dificuldade;
-        this.experienciaEntregador = experienciaEntregador;
-        this.experienciaAbrigo = experienciaAbrigo;
+        this.experiencia = experiencia;
     }
 
     public UUID getId() {
@@ -158,38 +156,29 @@ public class Entrega implements Serializable {
         this.dificuldade = dificuldade;
     }
 
-    public Integer getExperienciaEntregador() {
-        return experienciaEntregador;
+    public Integer getExperiencia() {
+        return experiencia;
     }
 
-    public void setExperienciaEntregador(Integer experienciaEntregador) {
-        this.experienciaEntregador = experienciaEntregador;
-    }
-
-    public Integer getExperienciaAbrigo() {
-        return experienciaAbrigo;
-    }
-
-    public void setExperienciaAbrigo(Integer experienciaAbrigo) {
-        this.experienciaAbrigo = experienciaAbrigo;
+    public void setExperiencia(Integer experiencia) {
+        this.experiencia = experiencia;
     }
 
     @Override
     public String toString() {
-        return "Entrega{" +
-                "id=" + id +
-                ", entregador=" + entregador +
-                ", pessoa=" + pessoa +
-                ", abrigoOrigem=" + abrigoOrigem +
-                ", descricao='" + descricao + '\'' +
-                ", peso=" + peso +
-                ", status=" + status +
-                ", dataPedido=" + dataPedido +
-                ", dataInicio=" + dataInicio +
-                ", dataConclusao=" + dataConclusao +
-                ", dificuldade=" + dificuldade +
-                ", experienciaEntregador=" + experienciaEntregador +
-                ", experienciaAbrigo=" + experienciaAbrigo +
-                '}';
+        return "ENTREGA -> | UUID:"+id+
+                " | Entregador: "+entregador.getNome()+
+                " | Pessoa: "+pessoa.getNome()+
+                " | Abrigo de Origem: "+abrigoOrigem.getNome()+
+                " | Descrição: "+descricao+
+                " | Peso (KG): "+peso+
+                " | Status: "+status+
+                " | Data do pedido: "+dataPedido+
+                " | Data de Início: "+dataInicio+
+                " | Data de Conclusão: "+dataConclusao+
+                " | Dificuldade (1-5): "+dificuldade+
+                " | Experiência do Entregador e Abrigo: "+experiencia+
+                " |";
+
     }
 }

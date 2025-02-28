@@ -28,8 +28,7 @@ public class EntregaService {
                         e.getDataInicio(),
                         e.getDataConclusao(),
                         e.getDificuldade(),
-                        e.getExperienciaEntregador(),
-                        e.getExperienciaAbrigo()
+                        e.getExperiencia()
                 ))
                 .collect(Collectors.toList());
     }

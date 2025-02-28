@@ -58,6 +58,10 @@ public class Entregador implements Serializable {
         this.entregas = entregas;
     }
 
+    public void adicionarPeso(double pesoDaCarga){
+        this.pesoAtual+=pesoDaCarga;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -148,18 +152,14 @@ public class Entregador implements Serializable {
 
     @Override
     public String toString() {
-        return "Entregador{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                ", senha='" + senha + '\'' +
-                ", nivel=" + nivel +
-                ", experiencia=" + experiencia +
-                ", pesoAtual=" + pesoAtual +
-                ", fotoUrl='" + fotoUrl + '\'' +
-                ", empresa=" + empresa +
-                ", ativo=" + ativo +
-                ", entregas=" + entregas +
-                '}';
+        return "ENTREGADOR -> | UUID: "+id+
+                " | Nome: "+nome+
+                " | Email: "+email+
+                " | Nível: "+nivel+
+                " | Experiência: "+experiencia+
+                " | Peso atual (KG): "+pesoAtual+
+                " | Foto: "+fotoUrl+
+                " | Empresa: "+empresa+
+                " | Ativo: " +ativo;
     }
 }

@@ -8,11 +8,11 @@ import br.com.death.strandingAPI.models.Entregador;
 import br.com.death.strandingAPI.models.Pessoa;
 import br.com.death.strandingAPI.repositories.*;
 import org.springframework.stereotype.Component;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Main {
@@ -26,6 +26,7 @@ public class Main {
     private Scanner lerString = new Scanner(System.in);
     private Scanner lerDouble = new Scanner(System.in);
     private Scanner lerInt = new Scanner(System.in);
+    private Optional<Entregador> entregadorLogado = Optional.of(new Entregador());
 
     public Main(EntregadorRepository entregadorRepository,
                 EntregaRepository entregaRepository,
@@ -61,6 +62,7 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("\nEncerrando sessão. Mantenha o ótimo trabalho 👍");
+                    entregadorLogado = Optional.empty();
                     break;
                 default:
                     System.out.println("\nOpção inválida.");
@@ -70,7 +72,7 @@ public class Main {
         } while (op != 0);
     }
 
-    public void menu(Entregador e) {
+    public void menu() {
         int op = 0;
 
         do {
@@ -85,12 +87,13 @@ public class Main {
 
             switch (op) {
                 case 1:
-                    apresentarPerfil(e);
+                    apresentarPerfil();
                     break;
                 case 2:
-                    apresentarUltimasEntregas(e);
+                    apresentarUltimasEntregas();
                     break;
                 case 3:
+                    selecionarAbrigo();
                     break;
                 case 4:
                     System.out.println("\n");
@@ -117,8 +120,9 @@ public class Main {
         Optional<Entregador> entregadorOptional = entregadorRepository.findByEmailAndSenha(email, senha);
 
         if (entregadorOptional.isPresent()) {
-            System.out.println("\nBem-vindo, " + entregadorOptional.get().getNome() + "!\n\n\n");
-            menu(entregadorOptional.get());
+            entregadorLogado = entregadorOptional;
+            System.out.println("\nBem-vindo, " + entregadorLogado.get().getNome() + "!\n\n\n");
+            menu();
         } else {
             System.out.println("\n<!>Credenciais inválidas<!>\n");
         }
@@ -192,6 +196,106 @@ public class Main {
         }
     }
 
+    public void selecionarAbrigo() {
+        try {
+            List<Abrigo> abrigos = abrigoRepository.findAll();
+
+            if (abrigos.isEmpty()) {
+                System.out.println("\nNenhum abrigo encontrado.");
+                return;
+            }
+
+            Optional<Abrigo> abrigo;
+            do {
+                imprimirAbrigos(abrigos);
+
+                System.out.print("\n\nInsira o nome do abrigo para verificar as entregas disponíveis:\nR.: ");
+                var nomeAbrigo = lerString.nextLine();
+
+                abrigo = abrigoRepository.findByNome(nomeAbrigo);
+
+                if (abrigo.isPresent()) {
+                    System.out.println("\nAbrigo selecionado. Verificando entregas disponíveis...\n");
+                    apresentarEntregasAbrigo(abrigo.get());
+                } else {
+                    System.out.println("\nAbrigo não encontrado, insira um nome válido.");
+                }
+            } while (abrigo != null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void apresentarEntregasAbrigo(Abrigo abrigo){
+        imprimirEntregas(abrigo.getHistoricoEntregas());
+
+        int op = 10000;
+
+        do{
+            System.out.print("\nDeseja selecionar alguma entrega? (1 - Sim | 0 - Não)\nR.: ");
+            op = lerInt.nextInt();
+
+            switch (op){
+                case 1:
+                    selecionarEntregas(abrigo.getHistoricoEntregas());
+                    break;
+                case 0:
+                    System.out.println("\nEncerrando consulta.");
+                    break;
+                default:
+                    System.out.println("\nOpção inválida.");
+                    break;
+            }
+
+        }while(op!=0);
+    }
+
+    public void selecionarEntregas(List<Entrega> entregasHistorico) {
+        // Filtra apenas as entregas sem entregador
+        List<Entrega> entregasDisponiveis = entregasHistorico.stream()
+                .filter(entrega -> entrega.getEntregador() == null)
+                .collect(Collectors.toList());
+
+        if (entregasDisponiveis.isEmpty()) {
+            System.out.println("\nNão há entregas disponíveis neste abrigo.");
+            return;
+        }
+
+        imprimirEntregas(entregasDisponiveis);
+
+        System.out.print("\n\nInsira o identificador da entrega para aceitar o contrato de entrega:\nR.: ");
+        var entregaId = lerString.nextLine();
+
+        Optional<Entrega> entregaOptional = entregasDisponiveis.stream()
+                .filter(e -> e.getId().equals(entregaId))
+                .findFirst();
+
+        if (entregaOptional.isPresent()) {
+            Entrega entrega = entregaOptional.get();
+
+            // Adiciona o peso da entrega ao entregador logado
+            entregadorLogado.get().adicionarPeso(entrega.getPeso());
+
+            // Adiciona a entrega à lista de entregas do entregador
+            entregadorLogado.get().getEntregas().add(entrega);
+            entregadorRepository.save(entregadorLogado.get());
+
+            // Atualiza a entrega associando o entregador e inserindo a data de início
+            entrega.setEntregador(entregadorLogado.get());
+            entrega.setDataInicio(LocalDate.from(LocalDateTime.now()));
+            entregaRepository.save(entrega);
+
+            // Remove a entrega da lista de entregas disponíveis do abrigo de origem
+            Abrigo abrigoOrigem = entrega.getAbrigoOrigem();
+            abrigoOrigem.getHistoricoEntregas().remove(entrega);
+            abrigoRepository.save(abrigoOrigem);
+
+            System.out.println("\nEntrega selecionada com sucesso!");
+        } else {
+            System.out.println("\nEntrega não encontrada ou já atribuída.");
+        }
+    }
+
     public void notificacoesDeEntrega() {
         try {
             instanciarNovasEntregas();
@@ -248,6 +352,8 @@ public class Main {
             entrega.setPeso(random.nextDouble() * 100); // Peso entre 0 e 100kg
             entrega.setStatus(StatusEntrega.PENDENTE);
             entrega.setDataPedido(LocalDate.now());
+            entrega.setDificuldade(random.nextInt() * 5);
+            entrega.setExperiencia(random.nextInt() * 350);
 
             entregaRepository.save(entrega);
 
@@ -256,21 +362,21 @@ public class Main {
 
     }
 
-    public void apresentarPerfil(Entregador entregador) {
+    public void apresentarPerfil() {
         System.out.println("\n======================================================");
-        System.out.printf("%-20s: %s%n", "Identificação", entregador.getId());
-        System.out.printf("%-20s: %s%n", "Nome", entregador.getNome());
-        System.out.printf("%-20s: %s%n", "Empresa", entregador.getEmpresa());
+        System.out.printf("%-20s: %s%n", "Identificação", entregadorLogado.get().getId());
+        System.out.printf("%-20s: %s%n", "Nome", entregadorLogado.get().getNome());
+        System.out.printf("%-20s: %s%n", "Empresa", entregadorLogado.get().getEmpresa());
         System.out.println("===================| PROGRESSO |======================");
-        System.out.printf("%-20s: %d%n", "Nível", entregador.getNivel());
-        System.out.printf("%-20s: %dxp%n", "Experiência", entregador.getExperiencia());
+        System.out.printf("%-20s: %d%n", "Nível", entregadorLogado.get().getNivel());
+        System.out.printf("%-20s: %dxp%n", "Experiência", entregadorLogado.get().getExperiencia());
         System.out.println("======================================================");
     }
 
-    public void apresentarUltimasEntregas(Entregador entregador) {
+    public void apresentarUltimasEntregas() {
         try {
-            System.out.println("\n|Últimas 20 entregas de " + entregador.getNome() + " |\n");
-            List<Entrega> listaDeEntregas = entregaRepository.findByEntregadorId(entregador.getId());
+            System.out.println("\n|Últimas 20 entregas de " + entregadorLogado.get().getNome() + " |\n");
+            List<Entrega> listaDeEntregas = entregaRepository.findByEntregadorId(entregadorLogado.get().getId());
             if (!listaDeEntregas.isEmpty()) {
                 imprimirEntregas(listaDeEntregas);
             } else {
@@ -282,67 +388,16 @@ public class Main {
     }
 
     public void imprimirEntregas(List<Entrega> lista) {
-        // Ordena pela data de pedido, da mais recente para a mais antiga
-        lista.sort(Comparator.comparing(Entrega::getDataPedido).reversed());
-
-        // Pega as últimas 20 entregas (ou menos, se não tiver 20)
-        List<Entrega> ultimasEntregas = lista.stream()
-                .limit(20)
-                .toList();
-
-        // Cria colunas
-        StringColumn idColumn = StringColumn.create("ID", ultimasEntregas.stream()
-                .map(entrega -> entrega.getId().toString())
-                .toArray(String[]::new));
-
-        StringColumn descricaoColumn = StringColumn.create("Descrição", ultimasEntregas.stream()
-                .map(Entrega::getDescricao)
-                .toArray(String[]::new));
-
-        StringColumn pessoaColumn = StringColumn.create("Para", ultimasEntregas.stream()
-                .map(entrega -> entrega.getPessoa().getNome())
-                .toArray(String[]::new));
-
-        StringColumn localColumn = StringColumn.create("Local", ultimasEntregas.stream()
-                .map(entrega -> entrega.getAbrigoOrigem().getNome())
-                .toArray(String[]::new));
-
-        StringColumn dificuldadeColumn = StringColumn.create("Dificuldade", ultimasEntregas.stream()
-                .map(entrega -> entrega.getDificuldade())
-                .toArray(String[]::new));
-
-        StringColumn dataPedidoColumn = StringColumn.create("Data Pedido", ultimasEntregas.stream()
-                .map(entrega -> entrega.getDataPedido().toString())
-                .toArray(String[]::new));
-
-        StringColumn dataInicioColumn = StringColumn.create("Data Início", ultimasEntregas.stream()
-                .map(entrega -> entrega.getDataInicio().toString())
-                .toArray(String[]::new));
-
-        StringColumn dataConclusaoColumn = StringColumn.create("Data Conclusão", ultimasEntregas.stream()
-                .map(entrega -> entrega.getDataConclusao().toString())
-                .toArray(String[]::new));
-
-        StringColumn statusColumn = StringColumn.create("Status", ultimasEntregas.stream()
-                .map(entrega -> entrega.getStatus().toString())
-                .toArray(String[]::new));
-
-
-        // Cria tabela
-        Table table = Table.create("Últimas 20 Entregas").addColumns(
-                idColumn,
-                descricaoColumn,
-                pessoaColumn,
-                localColumn,
-                dificuldadeColumn,
-                dataPedidoColumn,
-                dataInicioColumn,
-                dataConclusaoColumn,
-                statusColumn
-        );
-
-        // Imprime tabela
-        System.out.println(table);
+        System.out.println("\n\nApresentando Entregas:");
+        for (Entrega e : lista) {
+            System.out.println(e);
+        }
     }
 
+    public void imprimirAbrigos(List<Abrigo> lista) {
+        System.out.println("\n\nApresentando Abrigos:");
+        for (Abrigo a : lista) {
+            System.out.println(a);
+        }
+    }
 }

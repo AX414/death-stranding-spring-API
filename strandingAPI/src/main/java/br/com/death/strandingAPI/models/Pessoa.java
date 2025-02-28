@@ -71,11 +71,8 @@ public class Pessoa implements Serializable {
 
     @Override
     public String toString() {
-        return "Pessoa{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", abrigo=" + abrigo +
-                ", entregasRecebidas=" + entregasRecebidas +
-                '}';
+        return "PESSOA -> | UUID: "+id+
+                " | Nome: "+nome+
+                " | Abrigo: "+abrigo.getNome();
     }
 }
