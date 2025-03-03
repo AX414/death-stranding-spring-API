@@ -12,8 +12,14 @@ import java.util.UUID;
 @Repository
 public interface AbrigoRepository extends JpaRepository<Abrigo, UUID> {
 
-    @Query("SELECT a FROM Abrigo a JOIN FETCH a.historicoEntregas WHERE a.id = :id")
-    Optional<Abrigo> findByIdWithHistorico(@Param("id") UUID id);
+    @Query("SELECT a FROM Abrigo a JOIN FETCH a.entregasEnviadas WHERE a.id = :id")
+    Optional<Abrigo> findByIdWithEntregasEnviadas(@Param("id") UUID id);
+
+    @Query("SELECT a FROM Abrigo a JOIN FETCH a.entregasRecebidas WHERE a.id = :id")
+    Optional<Abrigo> findByIdWithEntregasRecebidas(@Param("id") UUID id);
+
+    @Query("SELECT a FROM Abrigo a LEFT JOIN FETCH a.entregasEnviadas LEFT JOIN FETCH a.entregasRecebidas WHERE a.id = :id")
+    Optional<Abrigo> findByIdWithFullHistorico(@Param("id") UUID id);
     Optional<Abrigo> findByNome(String nomeAbrigo);
 
 }

@@ -29,7 +29,7 @@ public class EntregadorService {
     private AfinidadeRepository afinidadeRepository;
 
     // Conversor de Entregador -> EntregadorDTO
-    private EntregadorDTO toDTO(Entregador e) {
+    private EntregadorDTO converterDTO(Entregador e) {
         return new EntregadorDTO(
                 e.getId(),
                 e.getNome(),
@@ -47,7 +47,7 @@ public class EntregadorService {
     // Busca todos os entregadores
     public List<EntregadorDTO> findAll() {
         return entregadorRepository.findAll().stream()
-                .map(this::toDTO)
+                .map(this::converterDTO)
                 .collect(Collectors.toList());
     }
 
@@ -126,6 +126,6 @@ public class EntregadorService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.ok(toDTO(entregador.get()));
+        return ResponseEntity.ok(converterDTO(entregador.get()));
     }
 }

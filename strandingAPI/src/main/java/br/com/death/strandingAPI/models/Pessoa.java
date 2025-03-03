@@ -24,17 +24,13 @@ public class Pessoa implements Serializable {
     @JoinColumn(name = "abrigo_id")
     private Abrigo abrigo;
 
-    @OneToMany(mappedBy = "pessoa")
-    private List<Entrega> entregasRecebidas;
-
     public Pessoa() {
     }
 
-    public Pessoa(UUID id, String nome, Abrigo abrigo, List<Entrega> entregasRecebidas) {
+    public Pessoa(UUID id, String nome, Abrigo abrigo) {
         this.id = id;
         this.nome = nome;
         this.abrigo = abrigo;
-        this.entregasRecebidas = entregasRecebidas;
     }
 
     public UUID getId() {
@@ -59,14 +55,6 @@ public class Pessoa implements Serializable {
 
     public void setAbrigo(Abrigo abrigo) {
         this.abrigo = abrigo;
-    }
-
-    public List<Entrega> getEntregasRecebidas() {
-        return entregasRecebidas;
-    }
-
-    public void setEntregasRecebidas(List<Entrega> entregasRecebidas) {
-        this.entregasRecebidas = entregasRecebidas;
     }
 
     @Override

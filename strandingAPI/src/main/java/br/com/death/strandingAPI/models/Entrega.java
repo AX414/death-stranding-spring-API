@@ -28,12 +28,12 @@ public class Entrega implements Serializable {
     private Entregador entregador;
 
     @ManyToOne
-    @JoinColumn(name = "pessoa_id")
-    private Pessoa pessoa;
+    @JoinColumn(name = "remetente_id")
+    private Pessoa remetente;
 
     @ManyToOne
-    @JoinColumn(name = "abrigo_origem_id")
-    private Abrigo abrigoOrigem;
+    @JoinColumn(name = "destinatario_id")
+    private Pessoa destinatario;
 
     private String descricao;
     private Double peso;
@@ -52,12 +52,12 @@ public class Entrega implements Serializable {
     public Entrega() {
     }
 
-    public Entrega(UUID id, Long version, Entregador entregador, Pessoa pessoa, Abrigo abrigoOrigem, String descricao, Double peso, StatusEntrega status, LocalDate dataPedido, LocalDate dataInicio, LocalDate dataConclusao, Integer dificuldade, Integer experiencia) {
+    public Entrega(UUID id, Long version, Entregador entregador, Pessoa remetente, Pessoa destinatario, String descricao, Double peso, StatusEntrega status, LocalDate dataPedido, LocalDate dataInicio, LocalDate dataConclusao, Integer dificuldade, Integer experiencia) {
         this.id = id;
         this.version = version;
         this.entregador = entregador;
-        this.pessoa = pessoa;
-        this.abrigoOrigem = abrigoOrigem;
+        this.remetente = remetente;
+        this.destinatario = destinatario;
         this.descricao = descricao;
         this.peso = peso;
         this.status = status;
@@ -84,20 +84,20 @@ public class Entrega implements Serializable {
         this.entregador = entregador;
     }
 
-    public Pessoa getPessoa() {
-        return pessoa;
+    public Pessoa getRemetente() {
+        return remetente;
     }
 
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public void setRemetente(Pessoa remetente) {
+        this.remetente = remetente;
     }
 
-    public Abrigo getAbrigoOrigem() {
-        return abrigoOrigem;
+    public Pessoa getDestinatario() {
+        return destinatario;
     }
 
-    public void setAbrigoOrigem(Abrigo abrigoOrigem) {
-        this.abrigoOrigem = abrigoOrigem;
+    public void setDestinatario(Pessoa destinatario) {
+        this.destinatario = destinatario;
     }
 
     public String getDescricao() {
@@ -167,9 +167,9 @@ public class Entrega implements Serializable {
     @Override
     public String toString() {
         return "ENTREGA -> | UUID:"+id+
-                " | Entregador: "+entregador.getNome()+
-                " | Pessoa: "+pessoa.getNome()+
-                " | Abrigo de Origem: "+abrigoOrigem.getNome()+
+                " | Entregador: "+(entregador != null ? entregador.getNome() : "Sem entregador")+
+                " | Remetente: "+remetente.getNome()+
+                " | Destinatário: "+destinatario.getNome()+
                 " | Descrição: "+descricao+
                 " | Peso (KG): "+peso+
                 " | Status: "+status+
@@ -177,8 +177,7 @@ public class Entrega implements Serializable {
                 " | Data de Início: "+dataInicio+
                 " | Data de Conclusão: "+dataConclusao+
                 " | Dificuldade (1-5): "+dificuldade+
-                " | Experiência do Entregador e Abrigo: "+experiencia+
+                " | Experiência: "+experiencia+
                 " |";
-
     }
 }

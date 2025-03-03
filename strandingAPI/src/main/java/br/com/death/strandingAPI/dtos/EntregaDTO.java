@@ -12,10 +12,10 @@ public record EntregaDTO(
         UUID id,
         @Schema(description = "Entregador responsável pela entrega")
         String entregador,
+        @Schema(description = "Pessoa que pediu que a entrega fosse feita")
+        String remetente,
         @Schema(description = "Pessoa a quem está endereçada a entrega")
-        String pessoa,
-        @Schema(description = "Abrigo de origem de onde surgiu a ordem de entrega")
-        String abrigoOrigem,
+        String destinatario,
         @Schema(description = "Descrição da entrega")
         String descricao,
         @Schema(description = "Peso da entrega")

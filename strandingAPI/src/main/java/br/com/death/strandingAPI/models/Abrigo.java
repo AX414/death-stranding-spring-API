@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+
 @Hidden
 @Entity
 @Table(name="abrigo")
@@ -25,20 +26,26 @@ public class Abrigo implements Serializable {
     private List<Afinidade> afinidades;
 
     @OneToMany(mappedBy = "abrigo")
-    private List<Pessoa> residentes;
+    private List<Pessoa> moradores;
 
-    @OneToMany(mappedBy = "abrigoOrigem", fetch = FetchType.LAZY)
-    private List<Entrega> historicoEntregas;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "remetente_id")
+    private List<Entrega> entregasEnviadas;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "destinatario_id")
+    private List<Entrega> entregasRecebidas;
 
     public Abrigo() {
     }
 
-    public Abrigo(UUID id, String nome, List<Afinidade> afinidades, List<Pessoa> residentes, List<Entrega> historicoEntregas) {
+    public Abrigo(UUID id, String nome, List<Afinidade> afinidades, List<Pessoa> moradores, List<Entrega> entregasEnviadas, List<Entrega> entregasRecebidas) {
         this.id = id;
         this.nome = nome;
         this.afinidades = afinidades;
-        this.residentes = residentes;
-        this.historicoEntregas = historicoEntregas;
+        this.moradores = moradores;
+        this.entregasEnviadas = entregasEnviadas;
+        this.entregasRecebidas = entregasRecebidas;
     }
 
     public UUID getId() {
@@ -65,25 +72,32 @@ public class Abrigo implements Serializable {
         this.afinidades = afinidades;
     }
 
-    public List<Pessoa> getResidentes() {
-        return residentes;
+    public List<Pessoa> getMoradores() {
+        return moradores;
     }
 
-    public void setResidentes(List<Pessoa> residentes) {
-        this.residentes = residentes;
+    public void setMoradores(List<Pessoa> moradores) {
+        this.moradores = moradores;
     }
 
-    public List<Entrega> getHistoricoEntregas() {
-        return historicoEntregas;
+    public List<Entrega> getEntregasEnviadas() {
+        return entregasEnviadas;
     }
 
-    public void setHistoricoEntregas(List<Entrega> historicoEntregas) {
-        this.historicoEntregas = historicoEntregas;
+    public void setEntregasEnviadas(List<Entrega> entregasEnviadas) {
+        this.entregasEnviadas = entregasEnviadas;
+    }
+
+    public List<Entrega> getEntregasRecebidas() {
+        return entregasRecebidas;
+    }
+
+    public void setEntregasRecebidas(List<Entrega> entregasRecebidas) {
+        this.entregasRecebidas = entregasRecebidas;
     }
 
     @Override
     public String toString() {
         return "ABRIGO -> |UUID: "+id+" | Nome: "+nome;
     }
-
 }

@@ -54,19 +54,13 @@ public class Main {
             op = lerInt.nextInt();
 
             switch (op) {
-                case 1:
-                    login();
-                    break;
-                case 2:
-                    cadastrarNovoEntregador();
-                    break;
-                case 0:
+                case 1 -> login();
+                case 2 -> cadastrarNovoEntregador();
+                case 0 -> {
                     System.out.println("\nEncerrando sessão. Mantenha o ótimo trabalho 👍");
                     entregadorLogado = Optional.empty();
-                    break;
-                default:
-                    System.out.println("\nOpção inválida.");
-                    break;
+                }
+                default -> System.out.println("\nOpção inválida.");
             }
 
         } while (op != 0);
@@ -86,26 +80,18 @@ public class Main {
             op = lerInt.nextInt();
 
             switch (op) {
-                case 1:
-                    apresentarPerfil();
-                    break;
-                case 2:
-                    apresentarUltimasEntregas();
-                    break;
-                case 3:
-                    selecionarAbrigo();
-                    break;
-                case 4:
+                case 1 -> apresentarPerfil();
+                case 2 -> apresentarUltimasEntregas();
+                case 3 -> selecionarAbrigo();
+                case 4 -> {
                     System.out.println("\n");
                     notificacoesDeEntrega();
-                    break;
-                case 0:
+                }
+                case 0 -> {
                     System.out.println("\nEncerrando consulta.");
                     consultarAPI();
-                    break;
-                default:
-                    System.out.println("\nOpção inválida.");
-                    break;
+                }
+                default -> System.out.println("\nOpção inválida.");
             }
         } while (op != 0);
     }
@@ -226,28 +212,31 @@ public class Main {
         }
     }
 
-    public void apresentarEntregasAbrigo(Abrigo abrigo){
-        imprimirEntregas(abrigo.getHistoricoEntregas());
+    public void apresentarEntregasAbrigo(Abrigo abrigo) {
+        List<Entrega> entregasPendentes = abrigo.getEntregasEnviadas().stream()
+                .filter(entrega -> entrega.getStatus() == StatusEntrega.PENDENTE && entrega.getEntregador() == null)
+                .toList();
 
-        int op = 10000;
+        if (entregasPendentes.isEmpty()) {
+            System.out.println("\nNão há entregas pendentes disponíveis neste abrigo.\n");
+            return;
+        }
 
-        do{
+        imprimirEntregas(entregasPendentes);
+
+        int op;
+
+        do {
             System.out.print("\nDeseja selecionar alguma entrega? (1 - Sim | 0 - Não)\nR.: ");
             op = lerInt.nextInt();
 
-            switch (op){
-                case 1:
-                    selecionarEntregas(abrigo.getHistoricoEntregas());
-                    break;
-                case 0:
-                    System.out.println("\nEncerrando consulta.");
-                    break;
-                default:
-                    System.out.println("\nOpção inválida.");
-                    break;
+            switch (op) {
+                case 1 -> selecionarEntregas(entregasPendentes);
+                case 0 -> System.out.println("\nEncerrando consulta.");
+                default -> System.out.println("\nOpção inválida.");
             }
 
-        }while(op!=0);
+        } while (op != 0);
     }
 
     public void selecionarEntregas(List<Entrega> entregasHistorico) {
@@ -286,8 +275,7 @@ public class Main {
             entregaRepository.save(entrega);
 
             // Remove a entrega da lista de entregas disponíveis do abrigo de origem
-            Abrigo abrigoOrigem = entrega.getAbrigoOrigem();
-            abrigoOrigem.getHistoricoEntregas().remove(entrega);
+            Abrigo abrigoOrigem = entrega.getRemetente().getAbrigo();
             abrigoRepository.save(abrigoOrigem);
 
             System.out.println("\nEntrega selecionada com sucesso!");
@@ -306,11 +294,10 @@ public class Main {
     }
 
     public void instanciarNovasEntregas() {
-        List<Abrigo> abrigos = abrigoRepository.findAll();
-        List<Pessoa> pessoas = pessoaRepository.findAll(); // Pegando todas as pessoas do banco
+        List<Pessoa> pessoas = pessoaRepository.findAll();
 
-        if (abrigos.isEmpty() || pessoas.isEmpty()) {
-            System.out.println("\nNão há abrigos ou pessoas disponíveis para criar novas entregas.\n");
+        if (pessoas.isEmpty()) {
+            System.out.println("\nNão há pessoas disponíveis para criar novas entregas.\n");
             return;
         }
 
@@ -335,31 +322,53 @@ public class Main {
                 "Caixa de materiais recicláveis"
         );
 
-        List<Entrega> novasEntregas = new ArrayList<>();
         for (int i = 0; i < quantidadeEntregas; i++) {
-            Abrigo abrigoOrigem = abrigos.get(random.nextInt(abrigos.size()));
-            Abrigo abrigoDestino;
-            do {
-                abrigoDestino = abrigos.get(random.nextInt(abrigos.size()));
-            } while (abrigoDestino.equals(abrigoOrigem));
+            Pessoa remetente = pessoas.get(random.nextInt(pessoas.size()));
+            Pessoa destinatario = pessoas.get(random.nextInt(pessoas.size()));
 
-            Pessoa pessoa = pessoas.get(random.nextInt(pessoas.size())); // Pessoa aleatória
+            // Verifica se remetente e destinatário são da mesma pessoa
+            if (remetente.equals(destinatario)) {
+                System.out.println("Remetente e destinatário são a mesma pessoa, pulando entrega...");
+                continue;
+            }
 
             Entrega entrega = new Entrega();
-            entrega.setAbrigoOrigem(abrigoOrigem);
-            entrega.setPessoa(pessoa);
+            entrega.setRemetente(remetente);
+            entrega.setDestinatario(destinatario);
             entrega.setDescricao(descricoes.get(random.nextInt(descricoes.size())));
-            entrega.setPeso(random.nextDouble() * 100); // Peso entre 0 e 100kg
             entrega.setStatus(StatusEntrega.PENDENTE);
             entrega.setDataPedido(LocalDate.now());
-            entrega.setDificuldade(random.nextInt() * 5);
-            entrega.setExperiencia(random.nextInt() * 350);
+            entrega.setDificuldade(random.nextInt(5) + 1); // De 1 a 5
+            entrega.setExperiencia(random.nextInt(350) + 1); // De 1 a 350 XP
+
+            double pesoAleatorio = random.nextDouble(100) + 1;
+            double pesoFormatado = Math.round(pesoAleatorio * 100.0) / 100.0;
+            entrega.setPeso(pesoFormatado); // Peso entre 1 e 100kg
 
             entregaRepository.save(entrega);
 
-            System.out.println("|Nova entrega em " + pessoa.getAbrigo().getNome() + "|");
-        }
+            Abrigo abrigoOrigem = remetente.getAbrigo();
+            Abrigo abrigoDestino = destinatario.getAbrigo();
 
+            // Adiciona nas listas corretas de acordo com os abrigos
+            if (abrigoOrigem != null) {
+                abrigoOrigem.getEntregasEnviadas().add(entrega);
+                abrigoRepository.save(abrigoOrigem);
+            } else {
+                System.out.println("Erro: Remetente sem abrigo associado!");
+            }
+
+            if (abrigoDestino != null) {
+                abrigoDestino.getEntregasRecebidas().add(entrega);
+                abrigoRepository.save(abrigoDestino);
+            } else {
+                System.out.println("Erro: Destinatário sem abrigo associado!");
+            }
+
+            System.out.println("| Nova entrega criada de " +
+                    remetente.getNome() + " (" + (abrigoOrigem != null ? abrigoOrigem.getNome() : "Sem abrigo") + ") para " +
+                    destinatario.getNome() + " (" + (abrigoDestino != null ? abrigoDestino.getNome() : "Sem abrigo") + ") |");
+        }
     }
 
     public void apresentarPerfil() {
